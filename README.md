@@ -1,5 +1,5 @@
-= Neo4j Download script
-
+Neo4j Download script
+=====================
 ```
 Usage: neoget [<options>] [<version> [<version> ...]]
 
@@ -26,4 +26,34 @@ Environment:
   NEO4J_DIST - base URL for downloads (default: http://dist.neo4j.org)
 
 Report bugs to nigel@neotechnology.com
+```
+
+Download Latest Release
+-----------------------
+```
+neoget
+```
+
+Download Latest Enterprise Release
+----------------------------------
+```
+neoget -e
+```
+
+Download Specific Release
+-------------------------
+```
+neoget 2.1.8
+```
+
+Download Latest Alpha Release
+-----------------------------
+```
+neoget -a
+```
+
+List Releases
+-------------
+```
+neoget -l
 ```

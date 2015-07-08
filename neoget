@@ -57,7 +57,14 @@ function download {
     do
         ARCHIVE="neo4j-${EDITION}-${VERSION}-unix.tar.gz"
         curl --silent --fail "${DIST}/${ARCHIVE}" -o "${ARCHIVE}"
-        echo "${ARCHIVE}"
+        RESULT=$?
+        if [ $RESULT -eq 0 ]
+        then
+            echo "${ARCHIVE}"
+        else
+            echo 1>&2 "Cannot download archive ${DIST}/${ARCHIVE}"
+            exit $RESULT
+        fi
     done
 }
 

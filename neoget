@@ -1,10 +1,25 @@
 #!/usr/bin/env bash
 
+# Copyright 2014-2015, Nigel Small
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 ACTION="download"
 DIST="http://dist.neo4j.org"
 ALPHA="http://alpha.neotechnology.com.s3-website-eu-west-1.amazonaws.com"
 EDITION="community"
 MODE=""
+CHECK_EXISTS=0
 ALL_VERSIONS="2.3.0-M02 2.2.2 2.1.8 2.0.4"
 
 function usage {
@@ -18,8 +33,9 @@ function usage {
     echo "  -l  show a list of available Neo4j versions"
     echo "  -h  display this help text"
     echo ""
-    echo "Alpha Release Options:"
+    echo "Other Options:"
     echo "  -a  select the latest alpha release for download"
+    echo "  -x  only download if the file does not already exist"
     echo ""
     echo "Edition Options:"
     echo "  -c  use Neo4j Community edition (default)"
@@ -56,19 +72,32 @@ function download {
     for VERSION in ${VERSIONS}
     do
         ARCHIVE="neo4j-${EDITION}-${VERSION}-unix.tar.gz"
-        curl --silent --fail "${DIST}/${ARCHIVE}" -o "${ARCHIVE}"
-        RESULT=$?
-        if [ $RESULT -eq 0 ]
+        DOWNLOAD=1
+        if [ $CHECK_EXISTS -eq 1 ]
         then
-            echo "${ARCHIVE}"
+            if [ -f $ARCHIVE ]
+            then
+                DOWNLOAD=0
+            fi
+        fi
+        if [ $DOWNLOAD -eq 1 ]
+        then
+            curl --silent --fail "${DIST}/${ARCHIVE}" -o "${ARCHIVE}"
+            RESULT=$?
+            if [ $RESULT -eq 0 ]
+            then
+                echo "${ARCHIVE}"
+            else
+                echo 1>&2 "Cannot download archive ${DIST}/${ARCHIVE}"
+                exit $RESULT
+            fi
         else
-            echo 1>&2 "Cannot download archive ${DIST}/${ARCHIVE}"
-            exit $RESULT
+            echo "${ARCHIVE}"
         fi
     done
 }
 
-while getopts ":acdefhluv" OPTION
+while getopts ":acdefhluvx" OPTION
 do
   case ${OPTION} in
     a)
@@ -98,6 +127,9 @@ do
       ;;
     v)
       MODE="version"
+      ;;
+    x)
+      CHECK_EXISTS=1
       ;;
     \?)
       echo "Invalid option: -${OPTARG}" >&2

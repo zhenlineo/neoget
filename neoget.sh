@@ -83,7 +83,7 @@ function download {
         fi
         if [ $DOWNLOAD -eq 1 ]
         then
-            if [[ "$ALL_VERSIONS" == "$ALPHA_VERSION" ]]
+            if [[ "$VERSIONS" == "$ALPHA_VERSION" ]]
             then
                 URL="${ALPHA}/${ARCHIVE}"
             else

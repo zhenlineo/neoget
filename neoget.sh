@@ -21,7 +21,7 @@ EDITION="community"
 MODE=""
 CHECK_EXISTS=0
 ALL_VERSIONS="2.3.0-M02 2.2.2 2.1.8 2.0.4"
-ALPHA_VERSION="3.0.0-M01"
+ALPHA_VERSION="3.0.0-M01-NIGHTLY"
 
 function usage {
     SCRIPT=$(basename $0)
